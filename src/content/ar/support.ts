@@ -1,0 +1,23 @@
+export const SUPPORT_PAGE = {
+  eyebrow: "الدعم",
+  pageHeaderTitle: "فريق الدعم في خدمتك",
+  pageHeaderSubtitle: "اختر الطريقة الأنسب للتواصل معنا. نلتزم بالرد على جميع الرسائل خلال أقل من 24 ساعة.",
+  sectionEyebrow: "الدعم والتواصل",
+  sectionTitle: "نحن هنا لمساعدتك",
+  sectionDescription: "فريق الدعم الفني لدينا جاهز للإجابة على استفساراتك وحل مشاكلك التقنية على مدار الساعة.",
+  emailLabel: "البريد الإلكتروني",
+  siteLabel: "الموقع الرسمي",
+  githubLabel: "GitHub Releases",
+  form: {
+    successMessage: "تم استلام رسالتك، سيتواصل معك فريق الدعم قريباً.",
+    nameLabel: "الاسم الكامل",
+    namePlaceholder: "اكتب اسمك",
+    emailLabel: "البريد الإلكتروني",
+    emailPlaceholder: "you@example.com",
+    subjectLabel: "الموضوع",
+    subjectPlaceholder: "عنوان مختصر",
+    messageLabel: "الرسالة",
+    messagePlaceholder: "اكتب استفسارك بالتفصيل…",
+    submitBtn: "إرسال الرسالة",
+  },
+};

@@ -1,0 +1,45 @@
+import type { SystemRequirement } from "@/types";
+
+export const DOWNLOAD_PAGE = {
+  eyebrow: "التحميل",
+  pageHeaderTitle: "حمّل Alpha Manager",
+  pageHeaderSubtitle: "أحدث إصدار جاهز للعمل على أنظمة ويندوز. تحقق من بصمة SHA256 قبل التثبيت لضمان أصالة الملف.",
+  latestReleaseLabel: "أحدث إصدار",
+  releaseDateLabel: "تاريخ الإصدار",
+  fileSizeLabel: "حجم الملف",
+  osLabel: "النظام",
+  archLabel: "المعمارية",
+  archValue: "x64",
+  sha256Label: "SHA256",
+  downloadBtnText: "تحميل AlphaManager-Setup-{version}.exe",
+  signedFileTip: "ملف موقّع رقمياً وآمن التحميل من الخادم الرسمي.",
+  releaseNotesTitle: "ملاحظات الإصدار",
+  previousVersionsTitle: "الإصدارات السابقة",
+  tableVersion: "الإصدار",
+  tableDate: "التاريخ",
+  tableSize: "الحجم",
+  tableDownload: "التحميل",
+  systemReqsTitle: "متطلبات التشغيل",
+  systemReqsSubtitle: "جاهز للعمل على أي جهاز حديث",
+  errorUnavailable: "تفاصيل التحديث غير متوفرة حالياً. يرجى المحاولة لاحقاً.",
+  loadingText: "جاري تحميل تفاصيل التحديث...",
+  mandatoryMessage: "هذا تحديث إلزامي لجميع المستخدمين.",
+  optionalMessage: "هذا تحديث اختياري.",
+  minSupportedVersionLabel: "الحد الأدنى للإصدار المدعوم",
+  downloadDisabledMessage: "التحميل غير متوفر حالياً بشكل مؤقت.",
+  notesBlock: {
+    added: "أُضيف",
+    improved: "تحسينات",
+    fixed: "إصلاحات",
+  },
+  previousVersionsEmpty: "لا توجد إصدارات سابقة مؤرشفة حالياً.",
+};
+
+export const SYSTEM_REQS_LIST: SystemRequirement[] = [
+  { label: "نظام التشغيل", value: "Windows 10 / 11 (64-bit)" },
+  { label: "المعالج", value: "Intel Core i3 أو أحدث / AMD Ryzen 3" },
+  { label: "الذاكرة (RAM)", value: "4 GB كحد أدنى — يُنصح بـ 8 GB" },
+  { label: "مساحة القرص", value: "500 MB مساحة فارغة" },
+  { label: "المعمارية", value: "x64" },
+  { label: "الاتصال", value: "اتصال إنترنت للتفعيل والتحديثات" },
+];
