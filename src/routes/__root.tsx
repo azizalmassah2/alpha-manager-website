@@ -6,17 +6,22 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { APP_NAME, APP_TAGLINE, APP_URL } from "@/constants";
+import { APP_NAME, APP_TAGLINE, APP_DOMAIN } from "@/constants";
+import { initGA, initClarity, trackPageView } from "@/lib/analytics";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand/10 text-primary shadow-soft">
+          <img src="/logos/logo.png" alt={APP_NAME} className="h-10 w-10 object-contain" />
+        </div>
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
         <p className="mt-2 text-sm text-muted-foreground font-medium">
@@ -25,7 +30,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             العودة إلى الرئيسية
           </Link>
@@ -45,6 +50,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand/10 text-primary shadow-soft">
+          <img src="/logos/logo.png" alt={APP_NAME} className="h-10 w-10 object-contain" />
+        </div>
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           حدث خطأ أثناء تحميل الصفحة
         </h1>
@@ -57,13 +65,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             إعادة المحاولة
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-full border border-input bg-background px-5 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-accent"
           >
             الرئيسية
           </a>
@@ -94,12 +102,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: `${APP_NAME} — ${APP_TAGLINE}` },
       { name: "twitter:description", content: `برنامج ${APP_NAME}: تطبيق سطح المكتب الاحترافي لإدارة أجهزة MikroTik وأجهزة البث والمستخدمين والبطاقات والتراخيص بواجهة عربية سريعة.` },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9c39e86e-1b9e-4e1e-97a2-9c8488301ecc/id-preview-74f1b055--d259aa13-8c90-4d89-bf02-701270350ce9.lovable.app-1784336346979.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9c39e86e-1b9e-4e1e-97a2-9c8488301ecc/id-preview-74f1b055--d259aa13-8c90-4d89-bf02-701270350ce9.lovable.app-1784336346979.png" },
+      { property: "og:image", content: `https://${APP_DOMAIN}/logos/logo.png` },
+      { name: "twitter:image", content: `https://${APP_DOMAIN}/logos/logo.png` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "apple-touch-icon", href: "/icons/icon-512.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -115,10 +125,44 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": APP_NAME,
+    "url": `https://${APP_DOMAIN}`,
+    "logo": `https://${APP_DOMAIN}/logos/logo.png`,
+    "email": "support@alphamanager.app",
+    "sameAs": [
+      "https://github.com/azizalmassah2/alpha-manager-website"
+    ]
+  };
+
+  const softwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": APP_NAME,
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "NetworkingApplication",
+    "downloadUrl": `https://${APP_DOMAIN}/download`,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
   return (
     <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+        />
       </head>
       <body>
         {children}
@@ -130,6 +174,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const state = useRouterState();
+
+  useEffect(() => {
+    initGA();
+    initClarity();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(state.location.pathname);
+  }, [state.location.pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>

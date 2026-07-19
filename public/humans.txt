@@ -1,0 +1,15 @@
+/* TEAM */
+Developer: Aziz Al-Massah
+GitHub: https://github.com/azizalmassah2
+
+/* THANKS */
+Google DeepMind (Antigravity AI coding pair assistant)
+
+/* SITE */
+Standards: HTML5, CSS3, ESNext
+Framework: TanStack Start (React + Vite + Vinxi + Nitro)
+Styling: Vanilla CSS variables + TailwindCSS v4
+Typefaces: Cairo, Tajawal (Google Fonts)
+Language: Arabic (RTL)
+Security: TLS, CSP Compliant, RFC 9116
+Site URL: https://alphamanager.app

@@ -68,8 +68,8 @@ export function AppMockup() {
           {/* Sidebar */}
           <aside className="border-l border-border bg-surface px-3 py-4">
             <div className="mb-4 flex items-center gap-2 px-2">
-              <div className="grid h-8 w-8 place-items-center rounded-lg bg-brand">
-                <span className="text-sm font-black text-primary-foreground">α</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/10 p-1 border border-primary/10">
+                <img src="/logos/logo.png" alt={APP_NAME} className="h-6 w-6 object-contain" />
               </div>
               <div className="text-sm font-bold">{APP_NAME}</div>
             </div>
@@ -135,7 +135,7 @@ export function AppMockup() {
                   <div className="text-xs font-bold">{MOCKUP.networkTraffic}</div>
                   <Activity className="h-4 w-4 text-primary" />
                 </div>
-                <svg viewBox="0 0 300 90" className="h-24 w-full">
+                <svg viewBox="0 0 300 90" className="h-24 w-full" aria-hidden="true">
                   <defs>
                     <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
                       <stop offset="0%" stopColor="oklch(0.6 0.19 258)" stopOpacity="0.5" />

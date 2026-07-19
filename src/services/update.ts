@@ -6,11 +6,39 @@ let cachedUpdate: UpdateInfo | null = null;
 let cachedHistory: ReleaseInfo[] | null = null;
 
 /**
- * Clears the in-memory cache (for testing or manual refresh)
+ * Clears the in-memory cache
  */
 export function clearCache() {
   cachedUpdate = null;
   cachedHistory = null;
+}
+
+/**
+ * Helper to fetch resource with timeout protection and retry strategy
+ */
+async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 seconds timeout
+
+    try {
+      const response = await fetch(`${url}?t=${Date.now()}`, {
+        signal: controller.signal,
+        cache: "no-store", // bypass local cache safely
+      });
+      clearTimeout(timeoutId);
+      if (response.ok) return response;
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (i === retries - 1) {
+        throw err;
+      }
+      // Wait before next retry
+      await new Promise((res) => setTimeout(res, delay));
+    }
+  }
+  throw new Error(`Failed to fetch ${url} after ${retries} retries`);
 }
 
 /**
@@ -20,10 +48,7 @@ export async function fetchUpdateInfo(): Promise<UpdateInfo> {
   if (cachedUpdate) return cachedUpdate;
 
   try {
-    const response = await fetch(UPDATE_JSON_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch update info: ${response.statusText}`);
-    }
+    const response = await fetchWithRetry(UPDATE_JSON_URL);
     const data = await response.json();
     cachedUpdate = data as UpdateInfo;
     return cachedUpdate;
@@ -40,12 +65,10 @@ export async function fetchHistory(): Promise<ReleaseInfo[]> {
   if (cachedHistory) return cachedHistory;
 
   try {
-    const response = await fetch(VERSIONS_JSON_URL);
-    if (response.ok) {
-      const data = await response.json();
-      cachedHistory = data as ReleaseInfo[];
-      return cachedHistory;
-    }
+    const response = await fetchWithRetry(VERSIONS_JSON_URL);
+    const data = await response.json();
+    cachedHistory = data as ReleaseInfo[];
+    return cachedHistory;
   } catch (error) {
     console.warn("Failed to fetch historical versions, falling back to latest release:", error);
   }
@@ -129,6 +152,7 @@ export async function isEnabled(): Promise<boolean> {
   const update = await fetchUpdateInfo();
   return update.enabled;
 }
+
 export async function getUpdateHistory(): Promise<ReleaseInfo[]> {
   return fetchHistory();
 }

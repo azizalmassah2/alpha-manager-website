@@ -30,8 +30,8 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
         <div>
           <div className="flex items-center gap-2">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-brand shadow-elegant">
-              <span className="text-lg font-black text-primary-foreground">α</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 p-1.5 shadow-soft border border-primary/10">
+              <img src="/logos/logo.png" alt={APP_NAME} className="h-7 w-7 object-contain" loading="lazy" />
             </div>
             <div>
               <div className="text-sm font-extrabold">{APP_NAME}</div>
@@ -48,7 +48,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
-                <Link to={l.href} className="hover:text-foreground">
+                <Link to={l.href} className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
                   {l.label}
                 </Link>
               </li>
@@ -59,9 +59,21 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-sm font-bold">{FOOTER.legal}</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/privacy" className="hover:text-foreground">{FOOTER.privacyPolicy}</Link></li>
-            <li><Link to="/terms" className="hover:text-foreground">{FOOTER.termsOfService}</Link></li>
-            <li><Link to="/terms" className="hover:text-foreground">{FOOTER.licenseAgreement}</Link></li>
+            <li>
+              <Link to="/privacy" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                {FOOTER.privacyPolicy}
+              </Link>
+            </li>
+            <li>
+              <Link to="/terms" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                {FOOTER.termsOfService}
+              </Link>
+            </li>
+            <li>
+              <Link to="/terms" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                {FOOTER.licenseAgreement}
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -75,7 +87,8 @@ export function Footer() {
             {date && <div className="mt-1 text-xs text-muted-foreground">{date}</div>}
             <Link
               to="/download"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand px-4 py-2 text-xs font-bold text-primary-foreground"
+              aria-label="تحميل النسخة الأخيرة من ألفا مانجر"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand px-4 py-2 text-xs font-bold text-primary-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
             >
               {FOOTER.downloadNow}
             </Link>
@@ -86,7 +99,17 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row md:px-8">
           <div>© {new Date().getFullYear()} {APP_NAME}. {FOOTER.rightsReserved}</div>
-          <div>{FOOTER.madeWithCare} · {APP_DOMAIN}</div>
+          <div>
+            {FOOTER.madeWithCare} ·{" "}
+            <a
+              href={`https://${APP_DOMAIN}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+            >
+              {APP_DOMAIN}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
