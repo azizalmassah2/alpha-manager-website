@@ -4,17 +4,28 @@ import { Menu, X, Download } from "lucide-react";
 import { NAV_LINKS } from "@/content/ar/common";
 import { APP_NAME, APP_DOMAIN } from "@/constants";
 import { cn } from "@/lib/utils";
+import { fetchSettings } from "@/services/update";
+import type { SettingsInfo } from "@/types";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [settings, setSettings] = useState<SettingsInfo | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+    
+    fetchSettings()
+      .then(setSettings)
+      .catch(() => {});
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const appTitle = settings?.appName || APP_NAME;
+  const appLink = settings?.website ? settings.website.replace("https://", "") : APP_DOMAIN;
 
   return (
     <header
@@ -24,13 +35,13 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 font-sans">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10 p-1.5 shadow-soft border border-primary/10">
-            <img src="/logos/logo.png" alt={APP_NAME} className="h-6 w-6 object-contain" />
+            <img src="/logos/logo.png" alt={appTitle} className="h-6 w-6 object-contain" />
           </div>
-          <div className="leading-tight">
-            <div className="text-sm font-extrabold tracking-tight">{APP_NAME}</div>
-            <div className="text-[10px] text-muted-foreground">{APP_DOMAIN}</div>
+          <div className="leading-tight text-right">
+            <div className="text-sm font-extrabold tracking-tight">{appTitle}</div>
+            <div className="text-[10px] text-muted-foreground">{appLink}</div>
           </div>
         </Link>
 
@@ -50,7 +61,7 @@ export function Header() {
         <div className="hidden items-center gap-2 md:flex">
           <Link
             to="/download"
-            aria-label="تحميل تطبيق ألفا مانجر"
+            aria-label={`تحميل تطبيق ${appTitle}`}
             className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
           >
             <Download className="h-4 w-4" />
@@ -84,7 +95,7 @@ export function Header() {
             <Link
               to="/download"
               onClick={() => setOpen(false)}
-              aria-label="تحميل تطبيق ألفا مانجر"
+              aria-label={`تحميل تطبيق ${appTitle}`}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
             >
               <Download className="h-4 w-4" />
