@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { APP_NAME, APP_TAGLINE, APP_DOMAIN } from "@/constants";
 import { initGA, initClarity, trackPageView } from "@/lib/analytics";
+import { fetchSettings } from "@/services/update";
 
 function NotFoundComponent() {
   return (
@@ -156,6 +157,18 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
         <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            `
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
@@ -179,6 +192,29 @@ function RootComponent() {
   useEffect(() => {
     initGA();
     initClarity();
+
+    // Dynamically apply light/dark theme based on remote settings & system preferences
+    fetchSettings()
+      .then((settings) => {
+        if (settings?.theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else if (settings?.theme === "light") {
+          document.documentElement.classList.remove("dark");
+        } else {
+          const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (systemPrefersDark) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        }
+      })
+      .catch(() => {
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (systemPrefersDark) {
+          document.documentElement.classList.add("dark");
+        }
+      });
   }, []);
 
   useEffect(() => {
