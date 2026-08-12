@@ -2,13 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { NAV_LINKS, FOOTER } from "@/content/ar/common";
 import { APP_NAME, APP_DOMAIN } from "@/constants";
-import { getVersion, getReleaseDate, fetchSettings } from "@/services/update";
-import type { SettingsInfo } from "@/types";
+import { getVersion, getReleaseDate } from "@/services/update";
 
 export function Footer() {
   const [version, setVersion] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
-  const [settings, setSettings] = useState<SettingsInfo | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -22,31 +20,21 @@ export function Footer() {
         if (active) setDate(d);
       })
       .catch(() => {});
-    fetchSettings()
-      .then((s) => {
-        if (active) setSettings(s);
-      })
-      .catch(() => {});
     return () => {
       active = false;
     };
   }, []);
 
-  const appTitle = settings?.appName || APP_NAME;
-  const copyrightText = settings?.copyright || `© ${new Date().getFullYear()} ${APP_NAME}. ${FOOTER.rightsReserved}`;
-  const websiteUrl = settings?.website || `https://${APP_DOMAIN}`;
-  const displayDomain = settings?.website ? settings.website.replace("https://", "") : APP_DOMAIN;
-
   return (
-    <footer className="mt-24 border-t border-border bg-surface font-sans">
+    <footer className="mt-24 border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
-        <div className="text-right">
+        <div>
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 p-1.5 shadow-soft border border-primary/10">
-              <img src="/logos/logo.png" alt={appTitle} className="h-7 w-7 object-contain" loading="lazy" />
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-brand shadow-elegant">
+              <span className="text-lg font-black text-primary-foreground">α</span>
             </div>
             <div>
-              <div className="text-sm font-extrabold">{appTitle}</div>
+              <div className="text-sm font-extrabold">{APP_NAME}</div>
               <div className="text-xs text-muted-foreground">{FOOTER.officialSite}</div>
             </div>
           </div>
@@ -55,12 +43,12 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="text-right">
+        <div>
           <h4 className="mb-4 text-sm font-bold">{FOOTER.quickLinks}</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
-                <Link to={l.href} className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                <Link to={l.href} className="hover:text-foreground">
                   {l.label}
                 </Link>
               </li>
@@ -68,28 +56,16 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className="text-right">
+        <div>
           <h4 className="mb-4 text-sm font-bold">{FOOTER.legal}</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>
-              <Link to="/privacy" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                {FOOTER.privacyPolicy}
-              </Link>
-            </li>
-            <li>
-              <Link to="/terms" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                {FOOTER.termsOfService}
-              </Link>
-            </li>
-            <li>
-              <Link to="/terms" className="hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                {FOOTER.licenseAgreement}
-              </Link>
-            </li>
+            <li><Link to="/privacy" className="hover:text-foreground">{FOOTER.privacyPolicy}</Link></li>
+            <li><Link to="/terms" className="hover:text-foreground">{FOOTER.termsOfService}</Link></li>
+            <li><Link to="/terms" className="hover:text-foreground">{FOOTER.licenseAgreement}</Link></li>
           </ul>
         </div>
 
-        <div className="text-right">
+        <div>
           <h4 className="mb-4 text-sm font-bold">{FOOTER.currentVersion}</h4>
           <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
             <div className="text-xs text-muted-foreground">{FOOTER.latestRelease}</div>
@@ -99,8 +75,7 @@ export function Footer() {
             {date && <div className="mt-1 text-xs text-muted-foreground">{date}</div>}
             <Link
               to="/download"
-              aria-label={`تحميل النسخة الأخيرة من ${appTitle}`}
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand px-4 py-2 text-xs font-bold text-primary-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand px-4 py-2 text-xs font-bold text-primary-foreground"
             >
               {FOOTER.downloadNow}
             </Link>
@@ -110,18 +85,8 @@ export function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row md:px-8">
-          <div>{copyrightText}</div>
-          <div>
-            {FOOTER.madeWithCare} ·{" "}
-            <a
-              href={websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-            >
-              {displayDomain}
-            </a>
-          </div>
+          <div>© {new Date().getFullYear()} {APP_NAME}. {FOOTER.rightsReserved}</div>
+          <div>{FOOTER.madeWithCare} · {APP_DOMAIN}</div>
         </div>
       </div>
     </footer>

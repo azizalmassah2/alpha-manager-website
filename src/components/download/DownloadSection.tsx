@@ -179,7 +179,7 @@ export function DownloadSection() {
                 {previousVersions.map((v) => (
                   <tr key={v.version} className="border-b border-border/60 last:border-0">
                     <td className="py-3 font-mono font-bold">v{v.version}</td>
-                    <td className="py-3 text-muted-foreground">{v.releaseDate}</td>
+                    <td className="py-3 text-muted-foreground">{v.date}</td>
                     <td className="py-3 text-muted-foreground">
                       {v.fileSize ? formatBytes(v.fileSize) : "—"}
                     </td>

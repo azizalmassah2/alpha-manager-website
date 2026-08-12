@@ -4,28 +4,17 @@ import { Menu, X, Download } from "lucide-react";
 import { NAV_LINKS } from "@/content/ar/common";
 import { APP_NAME, APP_DOMAIN } from "@/constants";
 import { cn } from "@/lib/utils";
-import { fetchSettings } from "@/services/update";
-import type { SettingsInfo } from "@/types";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<SettingsInfo | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    
-    fetchSettings()
-      .then(setSettings)
-      .catch(() => {});
-
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const appTitle = settings?.appName || APP_NAME;
-  const appLink = settings?.website ? settings.website.replace("https://", "") : APP_DOMAIN;
 
   return (
     <header
@@ -35,23 +24,23 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
-        <Link to="/" className="flex items-center gap-2 font-sans">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10 p-1.5 shadow-soft border border-primary/10">
-            <img src="/logos/logo.png" alt={appTitle} className="h-6 w-6 object-contain" />
+        <Link to="/" className="flex items-center gap-2">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-brand shadow-elegant">
+            <span className="text-lg font-black text-primary-foreground">α</span>
           </div>
-          <div className="leading-tight text-right">
-            <div className="text-sm font-extrabold tracking-tight">{appTitle}</div>
-            <div className="text-[10px] text-muted-foreground">{appLink}</div>
+          <div className="leading-tight">
+            <div className="text-sm font-extrabold tracking-tight">{APP_NAME}</div>
+            <div className="text-[10px] text-muted-foreground">{APP_DOMAIN}</div>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="رئيسي">
+        <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
               to={l.href}
               activeOptions={{ exact: l.href === "/" }}
-              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[status=active]:bg-accent data-[status=active]:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[status=active]:bg-accent data-[status=active]:text-foreground"
             >
               {l.label}
             </Link>
@@ -61,8 +50,7 @@ export function Header() {
         <div className="hidden items-center gap-2 md:flex">
           <Link
             to="/download"
-            aria-label={`تحميل تطبيق ${appTitle}`}
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+            className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant transition-transform hover:scale-[1.02]"
           >
             <Download className="h-4 w-4" />
             تحميل البرنامج
@@ -70,10 +58,9 @@ export function Header() {
         </div>
 
         <button
-          className="grid h-10 w-10 place-items-center rounded-lg border border-border md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+          className="grid h-10 w-10 place-items-center rounded-lg border border-border md:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
-          aria-expanded={open}
+          aria-label="القائمة"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -81,13 +68,13 @@ export function Header() {
 
       {open && (
         <div className="glass border-t border-border/60 md:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3" aria-label="جوال">
+          <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
             {NAV_LINKS.map((l) => (
               <Link
                 key={l.href}
                 to={l.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
               >
                 {l.label}
               </Link>
@@ -95,13 +82,12 @@ export function Header() {
             <Link
               to="/download"
               onClick={() => setOpen(false)}
-              aria-label={`تحميل تطبيق ${appTitle}`}
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-elegant"
             >
               <Download className="h-4 w-4" />
               تحميل البرنامج
             </Link>
-          </nav>
+          </div>
         </div>
       )}
     </header>
